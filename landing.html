@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Mixx by Yas - Local Copy (Full Carousel)</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Figtree', 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            color: #1a1a1c;
+            background: #fff;
+            overflow-x: hidden;
+        }
+
+        .custom-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ========== COLOR VARIABLES ========== */
+        :root {
+            --primary-blue: #072D5F;
+            --primary-dark: #132957;
+            --primary-light: #10357F;
+            --accent-yellow: #FEC10D;
+            --accent-yellow-dark: #FFD100;
+            --gray-text: #3E3E40;
+            --light-bg: #F6F9FE;
+            --border-color: #D3E2FA;
+        }
+
+        /* ========== HEADER ========== */
+        .top-header {
+            background: var(--primary-blue);
+            padding: 8px 0;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .align-items-center {
+            align-items: center;
+        }
+
+        .justify-content-between {
+            justify-content: space-between;
+        }
+
+        .desktop-menu ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .desktop-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .top-right-menu ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        .top-right-menu a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .bottom-header {
+            padding: 15px 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .bottom-menu-logo svg {
+            height: 60px;
+        }
+
+        /* ========== HERO CAROUSEL ========== */
+        .hero-carousel {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .hero-slide {
+            position: relative;
+            min-height: 550px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Slide 1 background */
+        .slide-1 {
+            background-image: url('https://yas.co.tz/wp-content/uploads/2025/04/anner-resize.webp');
+        }
+
+        /* Slide 2 background */
+        .slide-2 {
+            background-image: url('https://yas.co.tz/wp-content/uploads/2025/04/Untitled-4.webp');
+        }
+
+        /* Slide 3 background */
+        .slide-3 {
+            background-image: url('https://yas.co.tz/wp-content/uploads/2025/04/Untitled-2.webp');
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(7, 45, 95, 0.7);
+        }
+
+        .hero-content-slide {
+            position: relative;
+            z-index: 2;
+            color: white;
+            padding: 80px 0;
+            max-width: 600px;
+        }
+
+        .hero-content-slide h2 {
+            font-size: 52px;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero-content-slide h2 span {
+            color: var(--accent-yellow);
+        }
+
+        .hero-content-slide p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .download-buttons img {
+            height: 48px;
+            width: auto;
+        }
+
+        /* Swiper Navigation */
+        .swiper-button-prev, .swiper-button-next {
+            color: white !important;
+            background: rgba(0,0,0,0.3);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+        }
+
+        .swiper-button-prev:after, .swiper-button-next:after {
+            font-size: 20px !important;
+        }
+
+        .swiper-pagination-bullet {
+            background: white !important;
+            opacity: 0.5;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: var(--accent-yellow) !important;
+            opacity: 1;
+        }
+
+        /* ========== FEATURES SECTION ========== */
+        .features-section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+        }
+
+        .section-title span {
+            color: var(--accent-yellow);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray-text);
+            max-width: 600px;
+            margin: 0 auto 50px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 20px;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--primary-blue);
+        }
+
+        .feature-card p {
+            color: var(--gray-text);
+            font-size: 14px;
+        }
+
+        .center-phone {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .center-phone img {
+            max-width: 280px;
+            height: auto;
+        }
+
+        /* ========== LOAN SECTION ========== */
+        .loan-section {
+            background: linear-gradient(135deg, var(--accent-yellow-dark), #e6a017);
+            padding: 60px 0;
+        }
+
+        .loan-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .loan-content {
+            flex: 1;
+            color: var(--primary-dark);
+        }
+
+        .loan-content h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .loan-content h2 span {
+            color: white;
+        }
+
+        .loan-content p {
+            font-size: 18px;
+            margin-bottom: 25px;
+        }
+
+        .btn-yellow {
+            background: var(--primary-dark);
+            color: white;
+            padding: 14px 30px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .loan-image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .loan-image img {
+            max-width: 100%;
+            border-radius: 20px;
+        }
+
+        /* ========== SIMPLIFIED SECTION ========== */
+        .simplified-section {
+            padding: 80px 0;
+        }
+
+        .simplified-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .simplified-content {
+            flex: 1;
+        }
+
+        .simplified-content h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+        }
+
+        .simplified-content h2 span {
+            color: var(--accent-yellow);
+        }
+
+        .simplified-image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .simplified-image img {
+            max-width: 100%;
+        }
+
+        /* ========== FAQ SECTION ========== */
+        .faq-section {
+            padding: 80px 0;
+            background: var(--light-bg);
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        .faq-left {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .faq-left svg {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 20px;
+        }
+
+        .faq-left h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: var(--primary-blue);
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--primary-blue);
+        }
+
+        .faq-answer {
+            padding: 0 20px 20px;
+            display: none;
+            color: var(--gray-text);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .faq-answer.active {
+            display: block;
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 50px 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            margin-bottom: 20px;
+            color: var(--accent-yellow);
+        }
+
+        .footer-col a {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+
+        .footer-col a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-content-slide h2 {
+                font-size: 32px;
+            }
+            .hero-slide {
+                min-height: 450px;
+            }
+            .desktop-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="top-header">
+        <div class="custom-container">
+            <div class="d-flex align-items-center justify-content-between">
+                <nav class="desktop-menu">
+                    <ul>
+                        <li><a href="#">Consumer</a></li>
+                        <li><a href="#">Business</a></li>
+                        <li><a href="#" style="color: var(--accent-yellow);">Mixx by Yas</a></li>
+                        <li><a href="#">Fiber</a></li>
+                        <li><a href="#">About Us</a></li>
+                    </ul>
+                </nav>
+                <div class="top-right-menu">
+                    <ul>
+                        <li><a href="#">Assistance</a></li>
+                        <li><a href="#">🔍</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-header">
+        <div class="custom-container">
+            <div class="bottom-menu-logo">
+                <svg width="100" height="80" viewBox="0 0 400 300">
+                    <rect x="120" y="50" width="140" height="160" rx="22" fill="#fff" stroke="#F4B400" stroke-width="8"/>
+                    <rect x="170" y="185" width="40" height="8" rx="4" fill="#F4B400"/>
+                    <polygon points="210,25 300,65 250,120 160,80" fill="#F4B400"/>
+                    <polygon points="225,15 315,55 265,110 175,70" fill="#FFD54F" opacity="0.9"/>
+                    <text x="95" y="260" font-size="52" fill="#1C2E5B" font-weight="bold">tigo</text>
+                    <text x="200" y="260" font-size="52" fill="#F4B400" font-weight="bold">pesa</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO CAROUSEL WITH 3 SLIDES (IMAGES LOADED) -->
+    <div class="hero-carousel swiper" id="heroSwiper">
+        <div class="swiper-wrapper">
+            <!-- Slide 1 -->
+            <div class="swiper-slide">
+                <div class="hero-slide slide-1">
+                    <div class="hero-overlay"></div>
+                    <div class="custom-container">
+                        <div class="hero-content-slide">
+                            <h2><span>Unlimited</span><br>Freedom!</h2>
+                            <p>Earn Mixx Points every time you use Mixx and redeem them for Minutes, SMS or cash.</p>
+                            <div class="download-buttons">
+                                <img src="https://yas.co.tz/wp-content/uploads/2024/10/Group-2085665501.png" alt="Google Play">
+                                <img src="https://yas.co.tz/wp-content/uploads/2024/10/Group-2085665567.png" alt="App Store">
+                                <img src="https://yas.co.tz/wp-content/uploads/2025/01/logo-1.svg" alt="APK" style="height: 48px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="swiper-slide">
+                <div class="hero-slide slide-2">
+                    <div class="hero-overlay"></div>
+                    <div class="custom-container">
+                        <div class="hero-content-slide">
+                            <h2><span>Power to</span><br>You!</h2>
+                            <p>Mixx more to earn Mixx points. Redeem them for Minutes, SMS or cash.</p>
+                            <div class="download-buttons">
+                                <img src="https://yas.co.tz/wp-content/uploads/2024/10/Group-2085665501.png" alt="Google Play">
+                                <img src="https://yas.co.tz/wp-content/uploads/2024/10/Group-2085665567.png" alt="App Store">
+                                <img src="https://yas.co.tz/wp-content/uploads/2025/01/logo-1.svg" alt="APK" style="height: 48px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="swiper-slide">
+                <div class="hero-slide slide-3">
+                    <div class="hero-overlay"></div>
+                    <div class="custom-container">
+                        <div class="hero-content-slide">
+                            <h2><span>More for</span><br>You!</h2>
+                            <p>Mixx on the Super App and earn 5x more Mixx Points. Redeem them for Minutes, SMS or cash.</p>
+                            <div class="download-buttons">
+                                <img src="https://yas.co.tz/wp-content/uploads/2024/10/Group-2085665501.png" alt="Google Play">
+                                <img src="https://yas.co.tz/wp-content/uploads/2024/10/Group-2085665567.png" alt="App Store">
+                                <img src="https://yas.co.tz/wp-content/uploads/2025/01/logo-1.svg" alt="APK" style="height: 48px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Arrows -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-pagination"></div>
+    </div>
+
+    <!-- FEATURES SECTION (6 CARDS + CENTER PHONE) -->
+    <section class="features-section">
+        <div class="custom-container">
+            <h2 class="section-title"><span>Send money, pay bills, and top up your</span><br>phone - all from one Super app.</h2>
+            <p class="section-subtitle">Mixx by Yas offers simple, fast, and secure mobile transactions, allowing you to manage your money and stay connected wherever you are.</p>
+            
+            <div class="features-grid">
+                <!-- Left column 3 features -->
+                <div>
+                    <div class="feature-card">
+                        <svg viewBox="0 0 58 58" fill="none"><circle cx="29" cy="29" r="28" fill="white" stroke="#072D5F"/><text x="20" y="42" font-size="22" fill="#FEC10D">💰</text></svg>
+                        <h3>Send Money</h3>
+                        <p>Send funds instantly to friends, family, or businesses—anytime, anywhere, with just a tap!</p>
+                    </div>
+                    <div class="feature-card">
+                        <svg viewBox="0 0 58 58" fill="none"><circle cx="29" cy="29" r="28" fill="white" stroke="#072D5F"/><text x="20" y="42" font-size="22" fill="#FEC10D">🏧</text></svg>
+                        <h3>ATM Cash Out</h3>
+                        <p>Enjoy easy access to your money with over 350 Umoja switch and TCB bank ATMs.</p>
+                    </div>
+                    <div class="feature-card">
+                        <svg viewBox="0 0 58 58" fill="none"><circle cx="29" cy="29" r="28" fill="white" stroke="#072D5F"/><text x="20" y="42" font-size="22" fill="#FEC10D">📃</text></svg>
+                        <h3>Bill Payments</h3>
+                        <p>Simplify your life by paying your bills easily and securely.</p>
+                    </div>
+                </div>
+
+                <!-- Center - Phone Image -->
+                <div class="center-phone">
+                    <img src="https://yas.co.tz/wp-content/uploads/2024/10/Group-2085665590-scaled.webp" alt="Mixx App">
+                </div>
+
+                <!-- Right column 3 features -->
+                <div>
+                    <div class="feature-card">
+                        <svg viewBox="0 0 58 58" fill="none"><circle cx="29" cy="29" r="28" fill="white" stroke="#072D5F"/><text x="20" y="42" font-size="22" fill="#FEC10D">🛍️</text></svg>
+                        <h3>Lipa Kwa Simu</h3>
+                        <p>Track and manage all payments made to merchants seamlessly.</p>
+                    </div>
+                    <div class="feature-card">
+                        <svg viewBox="0 0 58 58" fill="none"><circle cx="29" cy="29" r="28" fill="white" stroke="#072D5F"/><text x="20" y="42" font-size="22" fill="#FEC10D">📱</text></svg>
+                        <h3>Buy Airtime</h3>
+                        <p>Top up your phone or for family and friends with ease.</p>
+                    </div>
+                    <div class="feature-card">
+                        <svg viewBox="0 0 58 58" fill="none"><circle cx="29" cy="29" r="28" fill="white" stroke="#072D5F"/><text x="20" y="42" font-size="22" fill="#FEC10D">🔄</text></svg>
+                        <h3>Self Care</h3>
+                        <p>Made a transaction to the wrong person? Don't worry, you can easily reverse it.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LOAN SECTION -->
+    <section class="loan-section">
+        <div class="custom-container">
+            <div class="loan-wrapper">
+                <div class="loan-content">
+                    <h2><span>Receive an advance of up to</span><br>2,000,000 Tsh instantly.</h2>
+                    <p>Need a helping hand for your projects? With Nivushe Plus, receive up to 2 million Tsh instantly on your mobile</p>
+                    <a href="#" class="btn-yellow">Explore Mixx by Yas →</a>
+                </div>
+                <div class="loan-image">
+                    <img src="https://yas.co.tz/wp-content/uploads/2024/10/Group-2085665570-scaled.webp" alt="Loan Offer">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SIMPLIFIED SECTION -->
+    <section class="simplified-section">
+        <div class="custom-container">
+            <div class="simplified-wrapper">
+                <div class="simplified-content">
+                    <h2><span>Mobile Money</span>, Simplified</h2>
+                    <p>Send, receive, and manage your funds effortlessly with Mixx by Yas, your all-in-one mobile money solution. Whether you're transferring money to family and friends, making business payments, or handling everyday expenses, Mixx by Yas gives you the flexibility and control you need</p>
+                    <a href="#" class="btn-yellow" style="background: var(--accent-yellow-dark); color: var(--primary-dark);">Get Started Now →</a>
+                </div>
+                <div class="simplified-image">
+                    <img src="https://yas.co.tz/wp-content/uploads/2024/10/Frame-2085665361.webp" alt="Mobile Money Simplified">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section class="faq-section">
+        <div class="custom-container">
+            <div class="faq-grid">
+                <div class="faq-left">
+                    <svg width="50" height="50" viewBox="0 0 40 53" fill="none"><path d="M19.9 40.8V28.3M19.9 28.3C21.1 28.3 22.3 28.1 23.5 27.8M19.9 28.3C18.7 28.3 17.5 28.1 16.3 27.8" stroke="#FFD100" stroke-width="3"/></svg>
+                    <h3>Frequently Asked Questions</h3>
+                    <p>Find solutions fast. Get the most out of your mobile money experience.</p>
+                </div>
+                <div class="faq-right">
+                    <div class="faq-item">
+                        <div class="faq-question">How can I send money via USSD? <span>▼</span></div>
+                        <div class="faq-answer">Dial *150*01# → Select 1 to send money → Enter receiver's number → Enter amount → Enter PIN to confirm.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">How can I send money via the Mixx by Yas App? <span>▼</span></div>
+                        <div class="faq-answer">Open App → Select Send Money → Choose contact → Enter amount → Confirm with PIN.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">What if I send money to the wrong person? <span>▼</span></div>
+                        <div class="faq-answer">Call Customer Care at 100 OR use Self-Care → Transaction Reversal within 12 hours.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">What is Nivushe Plus? <span>▼</span></div>
+                        <div class="faq-answer">A cash loan product allowing Mixx by Yas customers to receive short-term loans from 1,000 TSh to 2,000,000 TSh.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">How do I get a loan? <span>▼</span></div>
+                        <div class="faq-answer">Dial *150*01# → Select 7 (Financial Services) → Loans → Nivushe Plus → Follow prompts.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="custom-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Yas Tanzania</h4>
+                    <a href="#">Career</a>
+                    <a href="#">Yas in Africa</a>
+                    <a href="#">Axian Telecom</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Services</h4>
+                    <a href="#">Mobile Services</a>
+                    <a href="#">Home Plans</a>
+                    <a href="#">Business</a>
+                    <a href="#">Devices</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Useful Information</h4>
+                    <a href="#">FAQ</a>
+                    <a href="#">Find a store</a>
+                    <a href="#">Assistance</a>
+                    <a href="#">Terms & Conditions</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Follow Us</h4>
+                    <a href="#">Instagram</a>
+                    <a href="#">Facebook</a>
+                    <a href="#">Twitter</a>
+                    <a href="#">YouTube</a>
+                </div>
+            </div>
+            <div class="copyright">
+                © Yas Tanzania 2026 | Local Demo Copy
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        // Initialize Swiper Carousel with the 3 sliding images
+        const swiper = new Swiper('#heroSwiper', {
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            effect: 'slide',
+            speed: 500,
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const arrow = question.querySelector('span');
+                document.querySelectorAll('.faq-answer').forEach(a => {
+                    if (a !== answer) a.classList.remove('active');
+                });
+                document.querySelectorAll('.faq-question span').forEach(a => {
+                    if (a !== arrow) a.innerHTML = '▼';
+                });
+                answer.classList.toggle('active');
+                arrow.innerHTML = answer.classList.contains('active') ? '▲' : '▼';
+            });
+        });
+    </script>
+</body>
+</html>
